@@ -35,7 +35,7 @@ def download(args, df_val, folder, dataset_dir, class_name, class_code, class_li
 
     images_list = df_val_images['ImageID'][df_val_images.LabelName == class_code].values
     images_list = set(images_list)
-    print(bc.INFO + '[INFO] Found {} online images for {}.'.format(len(images_list), folder) + bc.ENDC)
+    print(bc.OKGREEN + 'Found {} online images for {}.'.format(len(images_list), folder) + bc.ENDC)
 
     if args.limit is not None:
         import itertools

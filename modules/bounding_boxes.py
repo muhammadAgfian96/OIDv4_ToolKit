@@ -22,7 +22,7 @@ def bounding_boxes_images(args, DEFAULT_OID_DIR):
 
 	if args.command == 'downloader':
 
-		logo(args.command)
+		# logo(args.command)
 
 		if args.type_csv is None:
 			print(bc.FAIL + 'Missing type_csv argument.' + bc.ENDC)

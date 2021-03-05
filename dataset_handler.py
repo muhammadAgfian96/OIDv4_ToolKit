@@ -1,6 +1,7 @@
 import os
 from os.path import join as jpath, isdir
 import cv2
+from modules.utils import logo
 import numpy as np
 from tqdm import tqdm
 import argparse
@@ -38,7 +39,10 @@ class OIDv6Handler:
 
         # converting stuff
         self.dst_folder = dst_folder
+        self.dst_folder =  jpath('OID', self.dst_folder)
+
         self.parent_oid_path = jpath(oid_dataset_path)
+        logo(self.args_get['command'])
 
 
     # update_stuff_after_downloading
@@ -46,7 +50,6 @@ class OIDv6Handler:
         print('updating directory...')
         if len(os.listdir(self.parent_oid_path)) >= 0:
             self.type_dataset_path = [jpath(self.parent_oid_path, type_dataset) for type_dataset in os.listdir(self.parent_oid_path)]
-            self.dst_folder =  jpath('OID', dst_folder)
             self.dst_folder_train =  jpath(self.dst_folder, 'train')
             self.dst_folder_valid =  jpath(self.dst_folder, 'validation')
             self.dst_folder_test =  jpath(self.dst_folder, 'test')
