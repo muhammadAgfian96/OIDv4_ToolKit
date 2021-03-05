@@ -53,6 +53,7 @@ def error_csv(file, csv_dir, args_y):
                 # FILE_URL = str(OID_URL + folder + '/' + file) # this is for v4
                 print(bc.INFO +'URL', FILE_URL, bc.ENDC)
             else:
+                FILE_URL = str(OID_URL_v5+'/'+file) # this is for v4
                 # download label code name
                 print(bc.INFO +'URL', FILE_URL, bc.ENDC)
                 FILE_URL = str(OID_URL + file)

@@ -48,7 +48,7 @@ class OIDv6Handler:
         self.child_dst_folder = [self.dst_folder_test, self.dst_folder_valid, self.dst_folder_train]
         for folder in self.child_dst_folder:
             if not os.path.exists(folder):
-                os.makedirs(path)
+                os.makedirs(folder)
         # if multiclass
         
         # if not multiclass
@@ -101,7 +101,7 @@ class OIDv6Handler:
                     limit_new = int(ratio * self.args_get['limit'])
                     ls_args[-1] = str(limit_new)
                     new_args = " ".join(ls_args)
-                    print(f'!python3 {new_args}')
+                    print(f'!python3 main.py {new_args}')
 
                 elif idx == 1:
                     new_args = my_args.replace("train", "validation")
@@ -109,7 +109,7 @@ class OIDv6Handler:
                     limit_new = int(ratio * self.args_get['limit'])
                     ls_args[-1] = str(limit_new)
                     new_args = " ".join(ls_args)
-                    print(f'!python3 {new_args}')
+                    print(f'!python3 main.py {new_args}')
 
                 elif idx == 2:
                     new_args = my_args.replace("train", "test")
@@ -117,7 +117,7 @@ class OIDv6Handler:
                     limit_new = int(ratio * self.args_get['limit'])
                     ls_args[-1] = str(limit_new)
                     new_args = " ".join(ls_args)
-                    print(f'!python3 {new_args}')
+                    print(f'!python3 main.py {new_args}')
 
     # converting
     def __read_label_oid(self, path_label):
