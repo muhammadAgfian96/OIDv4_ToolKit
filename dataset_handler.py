@@ -45,6 +45,9 @@ class OIDv6Handler:
         self.dst_folder_valid =  jpath(self.dst_folder, 'validation')
         self.dst_folder_test =  jpath(self.dst_folder, 'test')
 
+
+    # update_stuff_after_downloading
+    def update_directory(self):
         self.child_dst_folder = [self.dst_folder_test, self.dst_folder_valid, self.dst_folder_train]
         for folder in self.child_dst_folder:
             if not os.path.exists(folder):
@@ -66,8 +69,6 @@ class OIDv6Handler:
                     self.cls2id[cls_name] = idx
                     self.id2cls[idx] = cls_name
             print(self.cls2id, classes)
-
-
 
     # get data
     def cmd_get_data(self):
