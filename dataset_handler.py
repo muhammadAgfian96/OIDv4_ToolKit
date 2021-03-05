@@ -42,7 +42,7 @@ class OIDv6Handler:
         
         self.dst_folder =  jpath('OID', dst_folder)
         self.dst_folder_train =  jpath(self.dst_folder, 'train')
-        self.dst_folder_valid =  jpath(self.dst_folder, 'valid')
+        self.dst_folder_valid =  jpath(self.dst_folder, 'validation')
         self.dst_folder_test =  jpath(self.dst_folder, 'test')
 
         self.child_dst_folder = [self.dst_folder_test, self.dst_folder_valid, self.dst_folder_train]
@@ -58,12 +58,13 @@ class OIDv6Handler:
             type_name_data = os.path.basename(type_data)
             raw_list_cls = os.listdir(type_data)
             classes = [cls for cls in raw_list_cls if '.' not in cls]
-            self.cls2id ={}
+            self.cls2id, self.id2cls = {}, {}
 
             with open(jpath(self.dst_folder,type_name_data ,'_label.names'), 'w') as f:
                 for idx, cls_name in enumerate(classes):
                     f.writelines(str(cls_name))
                     self.cls2id[cls_name] = idx
+                    self.id2cls[idx] = cls_name
             print(self.cls2id, classes)
 
 
@@ -175,6 +176,7 @@ class OIDv6Handler:
     def convert(self, to='yolo'):
         for full_type_data in self.type_dataset_path:
             the_type_data = os.path.basename(full_type_data)
+            print('copying... ', the_type_data)
             for cls in os.listdir(full_type_data):
                 class_path = jpath(full_type_data, cls)
                 label_path = jpath(class_path, 'Label')
@@ -200,7 +202,69 @@ class OIDv6Handler:
                     print('not found anything ', full_type_data)
 
 
+    # see example data
+    def __get_pt_voc(self, cx, cy, w_obj, h_obj, img_w, img_h):
+        cx = float(cx)*img_w
+        cy = float(cy)*img_h
+        w_obj  = float(w_obj)*img_w
+        h_obj  = float(h_obj)*img_h
 
+        xmin, xmax = cx - (w_obj/2), cx + (w_obj/2)
+        ymin, ymax = cy - (h_obj/2), cy + (h_obj/2)
+        print(int(xmin), int(ymin)); print(int(xmax), int(ymax))
+        return (int(xmin), int(ymin)), (int(xmax), int(ymax))
+
+    def __read_yolo_txt(self, filename_path):
+        with open(filename_path, 'r') as f:
+            lines = f.readlines()
+            bboxes = []
+            for line in lines:
+                line = line.rstrip('\n').split(' ')
+                label = self.id2cls[int(line[0])]
+                cx, cy = float(line[1]), float(line[2])
+                w_obj, h_obj = float(line[3]), float(line[4])
+                bboxes.append([label, cx, cy, w_obj, h_obj])
+        return bboxes
+
+    def see_example(self, format='yolo', sample=10):
+        
+        for type_data in os.listdir(self.dst_folder):
+            folder_path = jpath(self.dst_folder, type_data)
+            labels = [f for f in os.listdir(folder_path) if f.endswith('.txt')]
+            
+            imgs = []
+            for name in labels:
+                name = name.split('.')[0]
+                label_yolo_txt = jpath(folder_path, name+'.txt')
+                yolo_bboxes = self.__read_yolo_txt(label_yolo_txt)
+                print('aaaa', yolo_bboxes)
+                img_path = jpath(folder_path, name+'.jpg')
+                img = cv2.imread(img_path)
+                img_h, img_w, c = img.shape
+
+                for bbox in yolo_bboxes:
+                    lbl, cx, cy, w_obj, h_obj = bbox
+                    pt1, pt2 = self.__get_pt_voc(cx, cy, w_obj, h_obj, img_w, img_h)
+                    img = cv2.putText(img, lbl, (pt1[0],pt1[1]-15), cv2.FONT_HERSHEY_COMPLEX, 1, (0,255,0), 1)
+                    img = cv2.rectangle(img, pt1, pt2, (0,255,0), 2)
+                
+                img = cv2.resize(img, (150,150))
+                imgs.append(img)
+                if len(imgs) >= sample:
+                    break
+
+        row1 = np.hstack(imgs[:(sample//2)])
+        row2 = np.hstack(imgs[sample//2:])
+        print(row1.shape, row2.shape)
+        new_img = np.vstack((row1, row2))
+        # cv2.imshow('test', new_img)
+        # cv2.imwrite('HAIII.jpg', new_img)
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
+        return new_img, imgs
+        
+
+            
 
 if __name__ == '__main__':
     args_get = {
@@ -224,6 +288,7 @@ if __name__ == '__main__':
     }
 
     dataset = OIDv6Handler(**args_get)
-    dataset.cmd_get_data()
+    # dataset.cmd_get_data()
+    dataset.see_example()
     # dataset.convert(to='yolo')
     # dataset.split('')
