@@ -262,7 +262,9 @@ class OIDv6Handler:
                 
                 img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
                 imgs.append(img)
-            
+                
+                if len(imgs) >= sample:
+                    break
             if len(imgs) >= sample:
                 break
         return imgs
