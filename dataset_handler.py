@@ -211,7 +211,6 @@ class OIDv6Handler:
 
         xmin, xmax = cx - (w_obj/2), cx + (w_obj/2)
         ymin, ymax = cy - (h_obj/2), cy + (h_obj/2)
-        print(int(xmin), int(ymin)); print(int(xmax), int(ymax))
         return (int(xmin), int(ymin)), (int(xmax), int(ymax))
 
     def __read_yolo_txt(self, filename_path):
@@ -237,7 +236,6 @@ class OIDv6Handler:
                 name = name.split('.')[0]
                 label_yolo_txt = jpath(folder_path, name+'.txt')
                 yolo_bboxes = self.__read_yolo_txt(label_yolo_txt)
-                print('aaaa', yolo_bboxes)
                 img_path = jpath(folder_path, name+'.jpg')
                 img = cv2.imread(img_path)
                 img_h, img_w, c = img.shape
@@ -248,7 +246,8 @@ class OIDv6Handler:
                     img = cv2.putText(img, lbl, (pt1[0],pt1[1]-15), cv2.FONT_HERSHEY_COMPLEX, 1, (0,255,0), 1)
                     img = cv2.rectangle(img, pt1, pt2, (0,255,0), 2)
                 
-                img = cv2.resize(img, (150,150))
+                # img = cv2.resize(img, (150,150))
+                img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
                 imgs.append(img)
                 if len(imgs) >= sample:
                     break
