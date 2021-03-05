@@ -16,8 +16,9 @@ class OIDv6Handler:
             'command' : 'downloader',
             'classes' : ['Apple', 'Human_head'],
             'multiclasses': 0, # 1 if you wan all class in one folder, 0 for seperate in each folder base in class 
-            'sub' : 'h',
+            'sub' : '',
             'type_csv': 'train',
+            'y': 'y'
 
             'image_IsOccluded': '',
             'image_IsTruncated': '', 
