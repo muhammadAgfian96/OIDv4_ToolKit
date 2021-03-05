@@ -5,6 +5,7 @@ def parser_arguments():
     Manage the input from the terminal.
     :return: parser
     '''
+
     parser = argparse.ArgumentParser(description='Open Image Dataset Downloader')
 
     parser.add_argument("command",

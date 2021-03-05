@@ -1,102 +1,14 @@
-<h1 align="center"> ~ OIDv4 ToolKit ~ </h1>
+<h1 align="center"> ~ OIDv6 ToolKit for Google Colabs ~ <br> (for yolov4 custom)</h1>
 
-Do you want to build your personal object detector but you don't have enough images to train your model? Do you want to train your personal image classifier, but you are tired of the deadly slowness of ImageNet? Have you already discovered [Open Images Dataset v4](https://storage.googleapis.com/openimages/web/index.html) that has [600](https://storage.googleapis.com/openimages/2018_04/bbox_labels_600_hierarchy_visualizer/circle.html) classes and more than 1,700,000 images with related bounding boxes ready to use? Do you want to exploit it for your projects but you don't want to download gigabytes and gigabytes of data!?
+Hello, this is a tool for download OIDv6 and directly convert to yolo, pascalVOC and COCO.
 
-With this repository we can help you to get the best of this dataset with less effort as possible.
-In particular, with this practical ToolKit written in Python3 we give you, for both object detection and image classification tasks, the following options:
 
-**(2.0) Object Detection**
-
-* download any of the [600](https://storage.googleapis.com/openimages/2018_04/bbox_labels_600_hierarchy_visualizer/circle.html) classes of the dataset individually, taking care of creating the related bounding boxes for each downloaded image
-* download multiple classes at the same time creating separated folder and bounding boxes for each of them
-* download multiple classes and creating a common folder for all of them with a unique annotation file of each image
-* download a single class or multiple classes with the desired [attributes](https://storage.googleapis.com/openimages/web/download.html)
-* use the practical visualizer to inspect the donwloaded classes
-
-**(3.0) Image Classification**
-
-* download any of the [19,794](https://storage.googleapis.com/openimages/web/download.html#attributes) classes in a common labeled folder
-* exploit tens of possible commands to select only the desired images (ex. like only test images)
-
-The code is quite documented and designed to be easy to extend and improve.
-Me and [Angelo](https://github.com/keldrom) are pleased if our little bit of code can help you with your project and research. Enjoy ;)
-
-![Snippet of the OIDv4 available classes](images/classes.png)
-
-# Open Image Dataset v4
-All the information related to this huge dataset can be found [here](https://storage.googleapis.com/openimages/web/index.html).
-In these few lines are simply summarized some statistics and important tips.
-
-**Object Detection**
-
-<table>
-    <tr><td></td><td><b>Train<b></td><td><b>Validation<b></td><td><b>Test<b></td><td><b>#Classes<b></td></tr>
-    <tr><td>Images</td><td>1,743,042</td><td>41,620	</td><td>125,436</td><td>-</td></tr>
-    <tr><td>Boxes</td><td>14,610,229</td><td>204,621</td><td>625,282</td><td>600</td></tr>
-</table>
-
-**Image Classification**
-
-<table>
-    <tr><td></td><td><b>Train<b></td><td><b>Validation<b></td><td><b>Test<b></td><td><b>#Classes<b></td></tr>
-    <tr><td>Images</td><td>9,011,219</td><td>41,620</td><td>125,436</td><td>-</td></tr>
-    <tr><td>Machine-Generated Labels</td><td>78,977,695</td><td>512,093</td><td>1,545,835</td><td>7,870</td></tr>
-    <tr><td>Human-Verified Labels</td><td>27,894,289</td><td>551,390</td><td>1,667,399</td><td>19,794</td></tr>
-</table>
-
-As it's possible to observe from the previous table we can have access to images from free different groups: train, validation and test.
-The ToolKit provides a way to select only a specific group where to search.
-Regarding object detection, it's important to underline that some annotations has been done as a group. It means that a single bounding box groups more than one istance. As mentioned by the creator of the dataset:
-- **IsGroupOf**: Indicates that the box spans a group of objects (e.g., a bed of flowers or a crowd of people). We asked annotators to use this tag for cases with more than 5 instances which are heavily occluding each other and are physically touching.
-That's again an option of the ToolKit that can be used to only grasp the desired images.
-
-Finally, it's interesting to notice that not all annotations has been produced by humans, but the creator also exploited an enhanced version of the method shown here reported [1](#reference)
 
 # 1.0 Getting Started
-
-## 1.1 Installation
-
-Python3 is required.
-
-1. Clone this repository
-   ```bash
-   git clone https://github.com/EscVM/OIDv4_ToolKit.git
-   ```
-2. Install the required packages
-   ```bash
-   pip3 install -r requirements.txt
-   ```
-Peek inside the requirements file if you have everything already installed. Most of the dependencies are common libraries.
-
-## 1.2 Launch the ToolKit to check the available options
-First of all, if you simply want a quick reminder of al the possible options given by the script, you can simply launch, from your console of choice, the [main.py](main.py). Remember to point always at the main directory of the project
-   ```bash
-   python3 main.py
-   ```
-or in the following way to get more information
-   ```bash
-   python3 main.py -h
-   ```
-
-# 2.0 Use the ToolKit to download images for Object Detection
-The ToolKit permit the download of your dataset in the folder you want (`Dataset`as default). The folder can be imposed with the argument
-`--Dataset` so you can make different dataset with different options inside.
-
-As previously mentioned, there are different available options that can be exploited. Let's see some of them.
+cooming soon will update!
 
 ## 2.1 Download different classes in separated folders
-Firstly, the ToolKit can be used to download classes in separated folders. The argument `--classes` accepts a list of classes or
-the path to the file.txt (`--classes path/to/file.txt`) that contains the list of all classes one for each lines (classes.txt uploaded as example).
 
-**Note**: for classes that are composed by different
-words please use the `_` character instead of the space (only for the inline use of the argument `--classes`).
-Example: `Polar_bear`.
-
-Let's for example download Apples and Oranges from the validation set. In this case we have to use the following command.
-  ```bash
-   python3 main.py downloader --classes Apple Orange --type_csv validation
-   ```
-The algorith will take care to download all the necessary files and build the directory structure like this:
 
 ```
 main_folder
@@ -140,9 +52,6 @@ main_folder
                           |0baea327f06f8afb.txt
                           |...
 ```
-If you have already downloaded the different csv files you can simply put them in the `csv_folder`. The script takes automatically care of the download of these files, but if you want to manually download them for whatever reason [here](https://storage.googleapis.com/openimages/web/download.html) you can find them.
-
-If you interupt the downloading script `ctrl+d` you can always restart it from the last image downloaded.
 
 ## 2.2 Download multiple classes in a common folder
 This option allows to download more classes, but in a common folder. Also the related notations are mixed together with

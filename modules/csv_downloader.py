@@ -7,6 +7,9 @@ import pandas as pd
 from modules.utils import bcolors as bc
 
 OID_URL = 'https://storage.googleapis.com/openimages/2018_04/'
+# 'https://storage.googleapis.com/openimages/2018_04/train/train-annotations-bbox'
+OID_URL_v5 = 'https://storage.googleapis.com/openimages/v5'
+OID_URL_v6_train = 'https://storage.googleapis.com/openimages/v6/oidv6-train-annotations-bbox.csv'
 
 def TTV(csv_dir, name_file, args_y):
     '''
@@ -40,12 +43,30 @@ def error_csv(file, csv_dir, args_y):
         if ans.lower() == 'y':
             folder = str(os.path.basename(file)).split('-')[0]
             if folder != 'class':
-                FILE_URL = str(OID_URL + folder + '/' + file)
+                # download csv gede
+                if folder == 'train':
+                    FILE_URL = str(OID_URL_v6_train) # this is for v4
+                    print(bc.INFO +'OID v6 csv for training')
+                else:
+                    print(bc.INFO +'OID v5 csv for test/val')
+                    FILE_URL = str(OID_URL_v5 + '/' + file) # this is for v4
+                # FILE_URL = str(OID_URL + folder + '/' + file) # this is for v4
+                print(bc.INFO +'URL', FILE_URL, bc.ENDC)
             else:
+                # download label code name
+                print(bc.INFO +'URL', FILE_URL, bc.ENDC)
                 FILE_URL = str(OID_URL + file)
+                # print('FILE_URL else', file, FILE_URL)
 
             FILE_PATH = os.path.join(csv_dir, file)
             save(FILE_URL, FILE_PATH)
+
+            if folder=='train':
+                dir_folder = os.path.dirname(FILE_PATH)
+                os.rename(FILE_PATH, os.path.join(dir_folder, 'train-annotations-bbox.csv'))
+                FILE_PATH = os.path.join(dir_folder, 'train-annotations-bbox.csv')
+                print('\n'+ bc.INFO +'renamed ', FILE_PATH + bc.ENDC)
+
             print('\n' + bc.OKBLUE + "File {} downloaded into {}.".format(file, FILE_PATH) + bc.ENDC)
 
         else:
