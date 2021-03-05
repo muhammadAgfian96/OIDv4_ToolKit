@@ -70,7 +70,6 @@ class OIDv6Handler:
 
     # get data
     def cmd_get_data(self):
-        
         my_args = ''
         for key in self.args_get.keys():
             if '--'  in key:
@@ -92,9 +91,9 @@ class OIDv6Handler:
 
             my_args += f' --{key} {value}'
 
-
         if self.args_get['--auto_split']:
             for idx, ratio in enumerate(self.args_get['--split_ratio']):
+
                 # train, valid, test
                 if idx == 0:
                     new_args = my_args.replace("train", "train")
@@ -103,6 +102,7 @@ class OIDv6Handler:
                     ls_args[-1] = str(limit_new)
                     new_args = " ".join(ls_args)
                     print(f'!python3 {new_args}')
+
                 elif idx == 1:
                     new_args = my_args.replace("train", "validation")
                     ls_args = new_args.split()
@@ -110,6 +110,7 @@ class OIDv6Handler:
                     ls_args[-1] = str(limit_new)
                     new_args = " ".join(ls_args)
                     print(f'!python3 {new_args}')
+
                 elif idx == 2:
                     new_args = my_args.replace("train", "test")
                     ls_args = new_args.split()
@@ -202,26 +203,27 @@ class OIDv6Handler:
 
 
 if __name__ == '__main__':
-    # args_get = {
-    #     'command' : 'downloader',
-    #     'classes' : ['Apple', 'Human_head'],
-    #     'multiclasses': 0, # 1 if you wan all class in one folder, 0 for seperate in each folder base in class 
-    #     'sub' : 'h',
-    #     'type_csv': 'train',
+    args_get = {
+        'command' : 'downloader',
+        'classes' : ['Apple', 'Human_head'],
+        'multiclasses': 0, # 1 if you wan all class in one folder, 0 for seperate in each folder base in class 
+        'sub' : 'h',
+        'type_csv': 'train',
 
-    #     'image_IsOccluded': '',
-    #     'image_IsTruncated': '', 
-    #     'image_IsGroupOf' : 0, 
-    #     'image_IsDepiction': 0, 
-    #     'image_IsInside': '',
+        'image_IsOccluded': '',
+        'image_IsTruncated': '', 
+        'image_IsGroupOf' : 0, 
+        'image_IsDepiction': 0, 
+        'image_IsInside': '',
 
-    #     'n_threads': 6,
-    #     'limit': 100,
+        'n_threads': 6,
+        'limit': 1000,
 
-    #     'auto_set': True,
-    # }
-    
-    dataset = OIDv6Handler()
+        '--auto_split': True,
+        '--split_ratio': (0.8, 0.1, 0.1)
+    }
+
+    dataset = OIDv6Handler(**args_get)
     dataset.cmd_get_data()
     # dataset.convert(to='yolo')
     # dataset.split('')
