@@ -241,11 +241,11 @@ class OIDv6Handler:
 
     def see_example(self, format='yolo', sample=10):
         
+        imgs = []
         for type_data in os.listdir(self.dst_folder):
             folder_path = jpath(self.dst_folder, type_data)
             labels = [f for f in os.listdir(folder_path) if f.endswith('.txt')]
             
-            imgs = []
             for name in labels:
                 name = name.split('.')[0]
                 label_yolo_txt = jpath(folder_path, name+'.txt')
@@ -262,8 +262,9 @@ class OIDv6Handler:
                 
                 img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
                 imgs.append(img)
-                if len(imgs) >= sample:
-                    break
+            
+            if len(imgs) >= sample:
+                break
         return imgs
         
 
