@@ -14,11 +14,11 @@ class OIDv6Handler:
         # get data
         self.args_get = {
             'command' : 'downloader',
+            'y': 'y',
             'classes' : ['Apple', 'Human_head'],
             'multiclasses': 0, # 1 if you wan all class in one folder, 0 for seperate in each folder base in class 
             'sub' : '',
             'type_csv': 'train',
-            'y': 'y',
 
             'image_IsOccluded': '',
             'image_IsTruncated': '', 
@@ -39,37 +39,41 @@ class OIDv6Handler:
         # converting stuff
         self.dst_folder = dst_folder
         self.parent_oid_path = jpath(oid_dataset_path)
-        self.type_dataset_path = [jpath(self.parent_oid_path, type_dataset) for type_dataset in os.listdir(self.parent_oid_path)]
-        
-        self.dst_folder =  jpath('OID', dst_folder)
-        self.dst_folder_train =  jpath(self.dst_folder, 'train')
-        self.dst_folder_valid =  jpath(self.dst_folder, 'validation')
-        self.dst_folder_test =  jpath(self.dst_folder, 'test')
 
 
     # update_stuff_after_downloading
-    def update_directory(self):
-        self.child_dst_folder = [self.dst_folder_test, self.dst_folder_valid, self.dst_folder_train]
-        for folder in self.child_dst_folder:
-            if not os.path.exists(folder):
-                os.makedirs(folder)
-        # if multiclass
-        
-        # if not multiclass
-        for type_data in self.type_dataset_path:
-            # type_data = train, test, valid
-            # os.makedirs(jpath(type_data, self.dst_folder))
-            type_name_data = os.path.basename(type_data)
-            raw_list_cls = os.listdir(type_data)
-            classes = [cls for cls in raw_list_cls if '.' not in cls]
-            self.cls2id, self.id2cls = {}, {}
+    def __update_directory(self):
+        print('updating directory...')
+        if len(os.listdir(self.parent_oid_path)) >= 0:
+            self.type_dataset_path = [jpath(self.parent_oid_path, type_dataset) for type_dataset in os.listdir(self.parent_oid_path)]
+            self.dst_folder =  jpath('OID', dst_folder)
+            self.dst_folder_train =  jpath(self.dst_folder, 'train')
+            self.dst_folder_valid =  jpath(self.dst_folder, 'validation')
+            self.dst_folder_test =  jpath(self.dst_folder, 'test')
+            
+            self.child_dst_folder = [self.dst_folder_test, self.dst_folder_valid, self.dst_folder_train]
+            for folder in self.child_dst_folder:
+                if not os.path.exists(folder):
+                    os.makedirs(folder)
+            # if multiclass
+            
+            # if not multiclass
+            for type_data in self.type_dataset_path:
+                # type_data = train, test, valid
+                # os.makedirs(jpath(type_data, self.dst_folder))
+                type_name_data = os.path.basename(type_data)
+                raw_list_cls = os.listdir(type_data)
+                classes = [cls for cls in raw_list_cls if '.' not in cls]
+                self.cls2id, self.id2cls = {}, {}
 
-            with open(jpath(self.dst_folder,type_name_data ,'_label.names'), 'w') as f:
-                for idx, cls_name in enumerate(classes):
-                    f.writelines(str(cls_name))
-                    self.cls2id[cls_name] = idx
-                    self.id2cls[idx] = cls_name
-            print(self.cls2id, classes)
+                with open(jpath(self.dst_folder,type_name_data ,'_label.names'), 'w') as f:
+                    for idx, cls_name in enumerate(classes):
+                        f.writelines(str(cls_name))
+                        self.cls2id[cls_name] = idx
+                        self.id2cls[idx] = cls_name
+                print(self.cls2id, classes)
+        else:
+            print('its Seems You havent downloaded the dataset. Please check cell above')
 
     # get data
     def cmd_get_data(self):
@@ -79,7 +83,7 @@ class OIDv6Handler:
                 continue
 
             if 'y' == key:
-                my_args += '-y'
+                my_args += ' -y'
                 continue
 
             value = self.args_get[key]
@@ -180,6 +184,7 @@ class OIDv6Handler:
         self.label_path_src = None
 
     def convert(self, to='yolo'):
+        self.__update_directory()
         for full_type_data in self.type_dataset_path:
             the_type_data = os.path.basename(full_type_data)
             print('copying... ', the_type_data)
@@ -252,21 +257,11 @@ class OIDv6Handler:
                     img = cv2.putText(img, lbl, (pt1[0],pt1[1]-15), cv2.FONT_HERSHEY_COMPLEX, 1, (0,255,0), 1)
                     img = cv2.rectangle(img, pt1, pt2, (0,255,0), 2)
                 
-                # img = cv2.resize(img, (150,150))
                 img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
                 imgs.append(img)
                 if len(imgs) >= sample:
                     break
-
-        row1 = np.hstack(imgs[:(sample//2)])
-        row2 = np.hstack(imgs[sample//2:])
-        print(row1.shape, row2.shape)
-        new_img = np.vstack((row1, row2))
-        # cv2.imshow('test', new_img)
-        # cv2.imwrite('HAIII.jpg', new_img)
-        # cv2.waitKey(0)
-        # cv2.destroyAllWindows()
-        return new_img, imgs
+        return imgs
         
 
             
