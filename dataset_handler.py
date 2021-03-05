@@ -18,7 +18,7 @@ class OIDv6Handler:
             'multiclasses': 0, # 1 if you wan all class in one folder, 0 for seperate in each folder base in class 
             'sub' : '',
             'type_csv': 'train',
-            'y': 'y'
+            'y': 'y',
 
             'image_IsOccluded': '',
             'image_IsTruncated': '', 
@@ -76,6 +76,10 @@ class OIDv6Handler:
         my_args = ''
         for key in self.args_get.keys():
             if '--'  in key:
+                continue
+
+            if 'y' == key:
+                my_args += '-y'
                 continue
 
             value = self.args_get[key]
